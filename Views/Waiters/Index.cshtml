@@ -1,0 +1,62 @@
+﻿@model Project.ViewModels.WaiterNameViewModel
+
+@{
+    ViewData["Title"] = "le FEIT - List Waiters";
+}
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <h1>List of Waiters</h1>
+    <form asp-controller="Waiters" asp-action="Index" method="get">
+        <p>
+            First Name: <input type="text" asp-for="WaiterFirstName" />
+            Last Name: <input type="text" asp-for="WaiterLastName" />
+            <input type="submit" value="Filter" />
+        </p>
+    </form>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Waiters[0].FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Waiters[0].LastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Waiters[0].HireDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Waiters[0].ServingPosition)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Waiters)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HireDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ServingPosition)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

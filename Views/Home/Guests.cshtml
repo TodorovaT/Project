@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "le FEIT - List Guests";
+}
+<h2>List of Guests</h2>
+<p><a href="/Home/CreateGuest">Create New</a></p>
+<table class="table" id="guestTable">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Phone Number</th>
+            <th>Points</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<hr />
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+            $.ajax({
+                type: "GET",
+                url: "/api/GuestsAPI",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $(data).each(function () {
+                        var fnstr = this.firstName ? this.firstName.substr(0, 50) : "";
+                        var lnstr = this.lastName ? this.lastName.substr(0, 50) : "";
+                        var pnostr = this.phoneNumber ? this.phoneNumber.substr(0, 12) : "";
+                        var pts = this.points ? this.points : "";
+                        var rowStr = '<tr>\
+                            <td>' + fnstr + '</td> \
+                            <td>' + lnstr + '</td> \
+                            <td>' + pnostr + '</td> \
+                            <td>'+ pts + '</td> \
+                            <td><a href="/Home/EditGuest?id=' + this.id + '">Edit</a> | \
+                            <a href="/Home/DetailsGuest?id=' + this.id + '">Details</a> | \
+                            <a href="/Home/DeleteGuest?id=' + this.id + '">Delete</a> </td> \
+                            </tr>';
+                        $("#guestTable > tbody").append(rowStr);
+                    });
+                }
+            });
+    </script>
+}

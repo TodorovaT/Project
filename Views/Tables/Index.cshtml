@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Project.Models.Table>
+
+@{
+    ViewData["Title"] = "le FEIT - List Tables";
+}
+
+<h1>List of Tables</h1>
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.TableNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SeatsNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PlacementTable)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Waiter)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TableNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SeatsNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlacementTable)
+                </td>
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <td>
+                        @if (item.WaiterId != null)
+                        {
+                            <a asp-controller="Waiters" asp-action="Details" asp-route-id="@item.WaiterId"> @Html.DisplayFor(modelItem => item.Waiter.FullName)</a>
+                        }
+                  
+                    </td>
+                }
+                    <td>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>}|
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a>}|
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        }
+                    </td>
+
+
+                </tr>
+            }
+        </tbody>
+    </table>

@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "le FEIT - Edit Guest";
+}
+<h2>Edit Guest</h2>
+<h4>Guest</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form id="formid">
+            <input type="hidden" data-val="true" data-val-required="The Id field is required." id="Id" name="Id" />
+            <div class="form-group">
+                <label class="control-label" for="FirstName">First Name</label>
+                <input class="form-control" type="text" data-val="true" data-val-length="The field First Name must be a string with a maximum length of 50." data-val-length-max="50" data-val-required="The First Name field is required." id="FirstName" name="FirstName" value="" />
+                <span class="text-danger field-validation-valid" data-valmsg-for="FirstName" data-valmsg-replace="true"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="LastName">Last Name</label>
+                <input class="form-control" type="text" data-val="true" data-val-length="The field Last Name must be a string with a maximum length of 50." data-val-length-max="50" data-val-required="The Last Name field is required." id="LastName" name="LastName" value="" />
+                <span class="text-danger field-validation-valid" data-valmsg-for="LastName" data-valmsg-replace="true"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="PhoneNumber">Phone Number</label>
+                <input class="form-control" type="text" data-val="true" data-val-length="The field Phone Number must be a string with a minimum length of 9 and a maximum length of 12." data-val-length-max="12" data-vallength-min="9" data-val-required="The Phone Number field is required." id="PhoneNumber" name="PhoneNumber" value="" />
+                <span class="text-danger field-validation-valid" data-valmsg-for="PhoneNumber" data-valmsg-replace="true"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="Points">Points</label>
+                <input class="form-control" type="text" data-val="true" data-val-number="The field Points must be a number." id="Points" name="Points" value="" />
+                <span class="text-danger field-validation-valid" data-valmsg-for="Points" data-valmsg-replace="true"></span>
+            </div>
+        </form>
+        <div class="form-group"> <input type="submit" value="Save" class="btn btn-default" id="button" /> </div>
+    </div>
+</div>
+<div>
+    <a href="/Home/Guests">Back to List</a>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            Id = getQueryVariable("Id");
+            fillGuest(Id);
+        });
+        function getQueryVariable(variable) {
+            var query = window.location.search.substring(1);
+            var vars = query.split('&');
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split('=');
+                if (decodeURIComponent(pair[0]) == variable) { return decodeURIComponent(pair[1]); }
+            }
+        }
+        var fillGuest = function (Id) {
+            $.ajax({
+                type: "GET",
+                url: "/api/GuestsAPI/" + Id,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    $("#Id").val(data.Id);
+                    $("#FirstName").val(data.FirstName);
+                    $("#LastName").val(data.LastName);
+                    $("#PhoneNumber").val(data.PhoneNumber);
+                    $("#Points").val(data.Points);
+                }
+            });
+        }
+        $("#button").click(function () {
+            var guest = {
+                Id: $("#Id").val(),
+                FirstName: $("#FirstName").val(),
+                LastName: $("#LastName").val(),
+                PhoneNumber: $("#PhoneNumber").val(),
+                Points: $("#Points").val()
+            }
+            var formData = {
+                Guest: guest
+            }
+            formData = JSON.stringify(formData);
+            console.log(formData);
+            $.ajax({
+                type: "PUT",
+                url: "/api/GuestsAPI/" + Id,
+                data: formData,
+                contentType: "application/json; charset=utf-8",
+                success: function (result) { window.location.href = "/Home/Guests"; },
+                error: function (result) { console.log(result.responseText); }
+            });
+        });
+    </script>
+}
+
